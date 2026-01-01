@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCMA Career Readiness Pulse Check</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #003D7C;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .nus-logo {
+            color: #003D7C;
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .program {
+            color: #D09F13;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        h2 {
+            color: #003D7C;
+            border-left: 4px solid #D09F13;
+            padding-left: 15px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .section-desc {
+            color: #666;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+        
+        .values-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .value-card {
+            padding: 12px 18px;
+            background-color: #f0f4f8;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            user-select: none;
+        }
+        
+        .value-card.selected {
+            background-color: #003D7C;
+            color: white;
+            border-color: #003D7C;
+        }
+        
+        .value-card.top-value {
+            background-color: #D09F13;
+            color: white;
+            border-color: #B08610;
+        }
+        
+        .sort-instructions {
+            background-color: #fff9e6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #D09F13;
+        }
+        
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .skill-card {
+            padding: 15px;
+            background-color: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .skill-card:active {
+            cursor: grabbing;
+        }
+        
+        .drop-zones {
+            display: flex;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .drop-zone {
+            flex: 1;
+            min-width: 250px;
+            min-height: 300px;
+            border: 3px dashed #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #fafafa;
+            transition: all 0.3s ease;
+        }
+        
+        .drop-zone.energizer {
+            border-color: #4CAF50;
+            background-color: #f1f8e9;
+        }
+        
+        .drop-zone.drainer {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+        
+        .zone-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .energizer .zone-title {
+            color: #2E7D32;
+        }
+        
+        .drainer .zone-title {
+            color: #C62828;
+        }
+        
+        .dropped-skill {
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        .dropped-skill.energizer-skill {
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .dropped-skill.drainer-skill {
+            border-left: 4px solid #f44336;
+        }
+        
+        .button {
+            background-color: #003D7C;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            margin: 10px 5px;
+        }
+        
+        .button:hover {
+            background-color: #002A5C;
+        }
+        
+        .button.secondary {
+            background-color: #D09F13;
+        }
+        
+        .button.secondary:hover {
+            background-color: #B08610;
+        }
+        
+        .button.outline {
+            background-color: white;
+            color: #003D7C;
+            border: 2px solid #003D7C;
+        }
+        
+        .button.outline:hover {
+            background-color: #f0f4f8;
+        }
+        
+        .results-container {
+            display: none;
+            background-color: #f0f7ff;
+            border: 1px solid #003D7C;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .result-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+        }
+        
+        .result-title {
+            color: #003D7C;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .result-desc {
+            color: #555;
+        }
+        
+        .recommendations {
+            background-color: #fff9e6;
+            border: 1px solid #D09F13;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .next-steps {
+            background-color: #e8f5e8;
+            border: 1px solid #4CAF50;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #777;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .counter {
+            display: inline-block;
+            background-color: #003D7C;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #003D7C;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .drop-zones {
+                flex-direction: column;
+            }
+            
+            .skills-container {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="nus-logo">NUS Business School</div>
+            <div class="program">MSc in Human Capital Management & Analytics</div>
+            <h1>Career Readiness Pulse Check</h1>
+            <p>Chart your career journey with this interactive assessment</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Part 1: Career Values -->
+        <div id="part1">
+            <h2><span class="counter">1</span> Career Values</h2>
+            <div class="section-desc">
+                Select up to 10 values that resonate with you at this stage of your career. 
+                <strong>Your values may change over time</strong>—this snapshot helps track your evolution and align goal-setting at each juncture.
+            </div>
+            
+            <div class="sort-instructions">
+                <strong>Instructions:</strong> Click to select values (up to 10). Then, click your <strong>top 5</strong> again to highlight them in gold.
+            </div>
+            
+            <div class="values-container" id="values-container">
+                <!-- Values will be populated by JavaScript -->
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <div id="values-count">Selected: 0/10 | Top 5: 0/5</div>
+                <button class="button" id="next-part1">Next: Career Skills</button>
+            </div>
+        </div>
+        
+        <!-- Part 2: Career Skills (Energizers vs. Drainers) -->
+        <div id="part2" style="display: none;">
+            <h2><span class="counter">2</span> Career Skills</h2>
+            <div class="section-desc">
+                Drag and drop skills into "Energizers" (skills that motivate you) or "Drainers" (skills that frustrate you the more you use them).
+                This helps identify work environments and roles that align with your natural energy.
+            </div>
+            
+            <h3>Available Skills</h3>
+            <div class="skills-container" id="skills-container">
+                <!-- Skills will be populated by JavaScript -->
+            </div>
+            
+            <h3>Drag Skills to the Appropriate Zone</h3>
+            <div class="drop-zones">
+                <div class="drop-zone energizer" id="energizer-zone">
+                    <div class="zone-title">⚡ Energizers</div>
+                    <div id="energizer-list"></div>
+                </div>
+                
+                <div class="drop-zone drainer" id="drainer-zone">
+                    <div class="zone-title">😩 Drainers</div>
+                    <div id="drainer-list"></div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="button outline" id="back-part2">Back to Values</button>
+                <button class="button" id="next-part2">See My Career Pulse</button>
+            </div>
+        </div>
+        
+        <!-- Part 3: Career Pulse Results -->
+        <div class="results-container" id="part3">
+            <h2>Your Career Pulse Results</h2>
+            
+            <div class="result-card">
+                <div class="result-title">Your Core Values Profile</div>
+                <div class="result-desc" id="values-result">Your selected values will appear here</div>
+                <p><em>Remember: These can evolve. Save this snapshot to compare later.</em></p>
+            </div>
+            
+            <div class="result-card">
+                <div class="result-title">Your Skills Energy Map</div>
+                <div class="result-desc" id="skills-result">Your energizers and drainers will appear here</div>
+            </div>
+            
+            <div class="result-card">
+                <div class="result-title">Suggested Career Directions</div>
+                <div class="result-desc" id="career-directions">
+                    Based on your inputs, potential fits might include:
+                </div>
+            </div>
+            
+            <div class="recommendations">
+                <h3>📋 Your Recommended Next Steps</h3>
+                <p><strong>1. Career Compass Workshop (Week 1-4):</strong> Dive deeper into your values and interests. Access <strong>Canvas</strong> for full details.</p>
+                <p><strong>2. Group Coaching Session:</strong> Discuss your career strategy and internship plans with Dion or Susan. Book via <strong>TalentConnect</strong> (Weeks 1-2 only).</p>
+                <p><strong>3. Complete Your Career Compass by Week 4:</strong> Early planning leads to better outcomes.</p>
+                <p><strong>4. Reach Out to BIZCareers:</strong> Contact Dion & Susan when in doubt.</p>
+                
+                <div style="margin-top: 20px;">
+                    <button class="button secondary" id="book-coaching">Book Group Coaching</button>
+                    <button class="button outline" id="retake-assessment">Retake Assessment</button>
+                    <button class="button" id="save-results">Save My Results</button>
+                </div>
+            </div>
+            
+            <div class="next-steps">
+                <h3>🚀 Your Action Items</h3>
+                <ol>
+                    <li>Log into <strong>TalentConnect</strong> and explore events</li>
+                    <li>Watch the "Guide to Booking Sessions" video</li>
+                    <li>Schedule your <strong>Group Coaching</strong> session early (limited slots)</li>
+                    <li>Bring these results to your first coaching session</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>NUS Business School BIZCareers | MSc HCMA Programme 2026</p>
+            <p>Your career journey starts here. Plan early, engage actively.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize data
+            const careerValues = [
+                "Achievement", "Autonomy", "Balance", "Challenge", "Collaboration", 
+                "Creativity", "Expertise", "Growth", "Impact", "Innovation", 
+                "Leadership", "Learning", "Recognition", "Security", "Service", 
+                "Stability", "Status", "Teamwork", "Variety", "Wealth"
+            ];
+            
+            const hcmaSkills = [
+                "Data Analysis", "Statistical Modeling", "HR Technology", "AI Applications", 
+                "Compensation Design", "Performance Management", "Talent Assessment", 
+                "Negotiation", "Conflict Resolution", "Employment Law", 
+                "Strategic Planning", "Change Management", "Employee Communication", 
+                "Coaching & Development", "Diversity & Inclusion", "Employer Branding", 
+                "Project Management", "Stakeholder Engagement", "Ethical Decision-Making", 
+                "Cross-cultural Management"
+            ];
+            
+            // Career direction mappings
+            const careerDirections = {
+                "Analytical": ["People Analytics Specialist", "HR Data Scientist", "Compensation Analyst", "HRIS Manager"],
+                "Strategic": ["HR Business Partner", "Talent Strategy Manager", "Organizational Development Consultant", "HR Director"],
+                "Operational": ["HR Operations Manager", "Talent Acquisition Lead", "Employee Relations Manager", "HR Generalist"],
+                "Technical": ["HR Technology Consultant", "People Analytics Platform Manager", "Digital HR Transformation Lead"],
+                "Developmental": ["Learning & Development Manager", "Leadership Development Consultant", "Career Coach", "Talent Management Specialist"]
+            };
+            
+            // State management
+            let state = {
+                selectedValues: [],
+                topValues: [],
+                energizers: [],
+                drainers: []
+            };
+            
+            // DOM elements
+            const progressFill = document.getElementById('progress-fill');
+            const valuesContainer = document.getElementById('values-container');
+            const valuesCount = document.getElementById('values-count');
+            const skillsContainer = document.getElementById('skills-container');
+            const energizerList = document.getElementById('energizer-list');
+            const drainerList = document.getElementById('drainer-list');
+            
+            // Initialize Part 1: Career Values
+            function initValues() {
+                valuesContainer.innerHTML = '';
+                careerValues.forEach(value => {
+                    const card = document.createElement('div');
+                    card.className = 'value-card';
+                    card.textContent = value;
+                    card.dataset.value = value;
+                    
+                    card.addEventListener('click', function() {
+                        const value = this.dataset.value;
+                        
+                        // If already in top values, remove from top
+                        if (state.topValues.includes(value)) {
+                            state.topValues = state.topValues.filter(v => v !== value);
+                            this.classList.remove('top-value');
+                            updateValuesDisplay();
+                            return;
+                        }
+                        
+                        // If already selected, make it a top value (if less than 5)
+                        if (state.selectedValues.includes(value) && state.topValues.length < 5) {
+                            state.topValues.push(value);
+                            this.classList.add('top-value');
+                            updateValuesDisplay();
+                            return;
+                        }
+                        
+                        // If not selected and we have less than 10, select it
+                        if (!state.selectedValues.includes(value) && state.selectedValues.length < 10) {
+                            state.selectedValues.push(value);
+                            this.classList.add('selected');
+                            updateValuesDisplay();
+                        }
+                    });
+                    
+                    valuesContainer.appendChild(card);
+                });
+                updateValuesDisplay();
+            }
+            
+            // Update values display and counter
+            function updateValuesDisplay() {
+                valuesCount.textContent = `Selected: ${state.selectedValues.length}/10 | Top 5: ${state.topValues.length}/5`;
+                
+                // Update progress bar
+                const progress = (state.selectedValues.length / 10) * 50;
+                progressFill.style.width = `${progress}%`;
+            }
+            
+            // Initialize Part 2: Skills
+            function initSkills() {
+                skillsContainer.innerHTML = '';
+                energizerList.innerHTML = '';
+                drainerList.innerHTML = '';
+                
+                // Create draggable skill cards
+                hcmaSkills.forEach(skill => {
+                    const card = document.createElement('div');
+                    card.className = 'skill-card';
+                    card.textContent = skill;
+                    card.dataset.skill = skill;
+                    card.draggable = true;
+                    
+                    card.addEventListener('dragstart', function(e) {
+                        e.dataTransfer.setData('text/plain', skill);
+                        setTimeout(() => this.style.opacity = '0.4', 0);
+                    });
+                    
+                    card.addEventListener('dragend', function() {
+                        this.style.opacity = '1';
+                    });
+                    
+                    skillsContainer.appendChild(card);
+                });
+                
+                // Setup drop zones
+                const energizerZone = document.getElementById('energizer-zone');
+                const drainerZone = document.getElementById('drainer-zone');
+                
+                [energizerZone, drainerZone].forEach(zone => {
+                    zone.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        this.style.backgroundColor = zone.classList.contains('energizer') ? '#e8f5e9' : '#ffebee';
+                    });
+                    
+                    zone.addEventListener('dragleave', function() {
+                        this.style.backgroundColor = zone.classList.contains('energizer') ? '#f1f8e9' : '#ffebee';
+                    });
+                    
+                    zone.addEventListener('drop', function(e) {
+                        e.preventDefault();
+                        this.style.backgroundColor = zone.classList.contains('energizer') ? '#f1f8e9' : '#ffebee';
+                        
+                        const skill = e.dataTransfer.getData('text/plain');
+                        const type = zone.classList.contains('energizer') ? 'energizer' : 'drainer';
+                        
+                        // Remove from opposite zone if already placed
+                        if (type === 'energizer' && state.drainers.includes(skill)) {
+                            state.drainers = state.drainers.filter(s => s !== skill);
+                        } else if (type === 'drainer' && state.energizers.includes(skill)) {
+                            state.energizers = state.energizers.filter(s => s !== skill);
+                        }
+                        
+                        // Add to appropriate zone
+                        if (type === 'energizer' && !state.energizers.includes(skill)) {
+                            state.energizers.push(skill);
+                        } else if (type === 'drainer' && !state.drainers.includes(skill)) {
+                            state.drainers.push(skill);
+                        }
+                        
+                        updateSkillsDisplay();
+                    });
+                });
+            }
+            
+            // Update skills display
+            function updateSkillsDisplay() {
+                energizerList.innerHTML = '';
+                drainerList.innerHTML = '';
+                
+                state.energizers.forEach(skill => {
+                    const div = document.createElement('div');
+                    div.className = 'dropped-skill energizer-skill';
+                    div.textContent = skill;
+                    energizerList.appendChild(div);
+                });
+                
+                state.drainers.forEach(skill => {
+                    const div = document.createElement('div');
+                    div.className = 'dropped-skill drainer-skill';
+                    div.textContent = skill;
+                    drainerList.appendChild(div);
+                });
+                
+                // Update progress bar
+                const totalSkills = state.energizers.length + state.drainers.length;
+                const progress = 50 + (totalSkills / hcmaSkills.length) * 50;
+                progressFill.style.width = `${Math.min(progress, 100)}%`;
+            }
+            
+            // Generate results
+            function generateResults() {
+                // Values result
+                const valuesResult = document.getElementById('values-result');
+                if (state.topValues.length > 0) {
+                    valuesResult.innerHTML = `<strong>Your Top 5 Values:</strong> ${state.topValues.join(', ')}<br>`;
+                    if (state.selectedValues.length > 5) {
+                        valuesResult.innerHTML += `<strong>Also Important:</strong> ${state.selectedValues.filter(v => !state.topValues.includes(v)).join(', ')}`;
+                    }
+                } else if (state.selectedValues.length > 0) {
+                    valuesResult.innerHTML = `<strong>Your Selected Values:</strong> ${state.selectedValues.join(', ')}<br><em>Click "Retake Assessment" to prioritize your top 5.</em>`;
+                }
+                
+                // Skills result
+                const skillsResult = document.getElementById('skills-result');
+                let skillsHtml = '';
+                
+                if (state.energizers.length > 0) {
+                    skillsHtml += `<strong>⚡ Energizers (${state.energizers.length}):</strong> ${state.energizers.join(', ')}<br>`;
+                }
+                
+                if (state.drainers.length > 0) {
+                    skillsHtml += `<strong>😩 Drainers (${state.drainers.length}):</strong> ${state.drainers.join(', ')}<br>`;
+                }
+                
+                if (state.energizers.length === 0 && state.drainers.length === 0) {
+                    skillsHtml = 'You haven\'t placed any skills yet. Try dragging skills to the zones above.';
+                }
+                
+                skillsResult.innerHTML = skillsHtml;
+                
+                // Career directions
+                const careerDirElement = document.getElementById('career-directions');
+                let directionsHtml = '<ul>';
+                
+                // Determine primary direction based on skills
+                const allSkills = [...state.energizers, ...state.drainers];
+                let directionCounts = {
+                    "Analytical": 0, "Strategic": 0, "Operational": 0, 
+                    "Technical": 0, "Developmental": 0
+                };
+                
+                // Map skills to directions (simplified logic)
+                allSkills.forEach(skill => {
+                    if (["Data Analysis", "Statistical Modeling", "Compensation Design"].includes(skill)) {
+                        directionCounts.Analytical++;
+                    }
+                    if (["Strategic Planning", "Change Management", "Project Management"].includes(skill)) {
+                        directionCounts.Strategic++;
+                    }
+                    if (["Performance Management", "Employee Communication", "Stakeholder Engagement"].includes(skill)) {
+                        directionCounts.Operational++;
+                    }
+                    if (["HR Technology", "AI Applications", "HRIS Manager"].includes(skill)) {
+                        directionCounts.Technical++;
+                    }
+                    if (["Coaching & Development", "Talent Assessment", "Diversity & Inclusion"].includes(skill)) {
+                        directionCounts.Developmental++;
+                    }
+                });
+                
+                // Find top direction
+                let topDirection = Object.keys(directionCounts).reduce((a, b) => 
+                    directionCounts[a] > directionCounts[b] ? a : b
+                );
+                
+                // Show relevant career options
+                if (careerDirections[topDirection]) {
+                    directionsHtml += `<li><strong>${topDirection} Focus:</strong> ${careerDirections[topDirection].join(', ')}</li>`;
+                }
+                
+                // Also show other potential directions
+                Object.keys(directionCounts).forEach(dir => {
+                    if (dir !== topDirection && directionCounts[dir] > 0 && careerDirections[dir]) {
+                        directionsHtml += `<li><strong>${dir} Potential:</strong> ${careerDirections[dir].slice(0, 2).join(', ')}</li>`;
+                    }
+                });
+                
+                if (allSkills.length === 0) {
+                    directionsHtml += '<li>Complete the skills assessment above to see personalized career suggestions.</li>';
+                }
+                
+                directionsHtml += '</ul>';
+                careerDirElement.innerHTML = directionsHtml;
+            }
+            
+            // Navigation handlers
+            document.getElementById('next-part1').addEventListener('click', function() {
+                if (state.selectedValues.length === 0) {
+                    alert('Please select at least one career value before proceeding.');
+                    return;
+                }
+                
+                document.getElementById('part1').style.display = 'none';
+                document.getElementById('part2').style.display = 'block';
+                initSkills();
+            });
+            
+            document.getElementById('back-part2').addEventListener('click', function() {
+                document.getElementById('part2').style.display = 'none';
+                document.getElementById('part1').style.display = 'block';
+            });
+            
+            document.getElementById('next-part2').addEventListener('click', function() {
+                generateResults();
+                document.getElementById('part2').style.display = 'none';
+                document.getElementById('part3').style.display = 'block';
+                progressFill.style.width = '100%';
+            });
+            
+            // Action buttons
+            document.getElementById('book-coaching').addEventListener('click', function() {
+                alert('To book your Group Coaching Session:\n\n1. Log in to TalentConnect\n2. Select "Events"\n3. Search for "Group Coaching"\n4. Book your preferred slot (first come, first served)\n\nWeeks 1 & 2 only with Dion or Susan.');
+            });
+            
+            document.getElementById('retake-assessment').addEventListener('click', function() {
+                if (confirm('Retake the assessment? Your current selections will be reset.')) {
+                    // Reset state
+                    state = {
+                        selectedValues: [],
+                        topValues: [],
+                        energizers: [],
+                        drainers: []
+                    };
+                    
+                    // Show Part 1
+                    document.getElementById('part3').style.display = 'none';
+                    document.getElementById('part1').style.display = 'block';
+                    
+                    // Reset UI
+                    initValues();
+                    progressFill.style.width = '0%';
+                }
+            });
+            
+            document.getElementById('save-results').addEventListener('click', function() {
+                const resultsText = `
+NUS HCMA Career Readiness Pulse Check
+Date: ${new Date().toLocaleDateString()}
+
+YOUR CAREER VALUES:
+Top 5: ${state.topValues.join(', ')}
+All Selected: ${state.selectedValues.join(', ')}
+
+YOUR SKILLS ENERGY MAP:
+Energizers (${state.energizers.length}): ${state.energizers.join(', ')}
+Drainers (${state.drainers.length}): ${state.drainers.join(', ')}
+
+RECOMMENDED NEXT STEPS:
+1. Attend Career Compass Workshop (Canvas)
+2. Book Group Coaching via TalentConnect
+3. Complete Career Compass by Week 4
+4. Reach out to Dion & Susan at BIZCareers
+
+Bring this to your coaching session!
+                `;
+                
+                const blob = new Blob([resultsText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `HCMA_Career_Readiness_Pulse_Check_${new Date().toISOString().slice(0,10)}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('Results saved! Bring this file to your Group Coaching session.');
+            });
+            
+            // Initialize the assessment
+            initValues();
+        });
+    </script>
+</body>
+</html>
